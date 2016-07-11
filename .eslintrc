@@ -1,0 +1,9 @@
+{
+  "extends": "google",
+  "rules": {
+    "indent": ["error", 4],
+    "max-len": ["warn", 180, 4],
+    "no-negated-condition": "warn",
+    "comma-dangle": "warn",
+  }
+}
