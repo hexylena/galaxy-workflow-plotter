@@ -1,0 +1,13 @@
+g.dragging rect {
+    stroke: green;
+}
+
+svg {
+    border: 1px solid black;
+}
+
+#download {
+    float:right;
+    top: 30px;
+    right 30px;
+}
