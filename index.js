@@ -1,3 +1,4 @@
+var d3 = require("./bower_components/d3/d3.js");
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
     width = $("#right_col").width() + 20 - margin.left - margin.right,
     mapped_parameters = [
@@ -326,3 +327,12 @@ function dragended(d) {
     d3.select(this).classed("dragging", false);
     save();
 }
+
+$("#left_col").height($(window).height())
+$("#left_col_contents").height( $(window).height() - $("#logo").height() - 20 )
+$("#download").click(function(){
+    var blob = new Blob(
+        [$("#svg_container").html()],
+        {type: "image/svg+xml"});
+    saveAs(blob, "workflow_plot.svg");
+});

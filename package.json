@@ -5,10 +5,16 @@
   "main": "index.js",
   "devDependencies": {
     "bower": "^1.3.1",
-    "http-server": "^0.6.1"
+    "css-loader": "^0.23.1",
+    "html-webpack-plugin": "^2.22.0",
+    "http-server": "^0.6.1",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7"
   },
   "dependencies": {
     "file-loader": "^0.9.0",
+    "hammerjs": "^2.0.8",
+    "jquery": "^3.1.0",
     "webpack": "^1.13.1"
   },
   "scripts": {
