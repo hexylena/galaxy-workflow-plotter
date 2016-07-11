@@ -1,6 +1,6 @@
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom
+    height = 800 - margin.top - margin.bottom
     graph = undefined,
     dirty = false;
 
@@ -290,3 +290,10 @@ function dragended(d) {
     save();
 }
 
+
+$("#download").click(function(){
+    var blob = new Blob(
+        [$("#svg_container").html()],
+        {type: "image/svg+xml"});
+    saveAs(blob, "workflow_plot.svg");
+});
