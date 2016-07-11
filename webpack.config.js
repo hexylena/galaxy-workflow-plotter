@@ -1,5 +1,4 @@
 var FileLoader = require('file-loader');
-var GhPagesWebpackPlugin = require('gh-pages-webpack-plugin');
 
 module.exports = {
     entry: ["./index.js"],
