@@ -1,26 +1,11 @@
-# Galaxy Reports WebApp
+# Galaxy Workflow Plotter
 
-[![Build Status](https://travis-ci.org/erasche/galaxy-reports.svg?branch=master)](https://travis-ci.org/erasche/galaxy-reports)
+A minimal D3 based workflow plotter with some small plot customisation options.
 
-A minimal React JS application to replace Galaxy's sluggish reports page
-
-## Usage
-
-__Install the dependencies:__
-
-`npm install`
-
-__Test:__
-
-`npm test`
-
-__Development mode with livereload:__
-
-`gulp watch`
-
-__When you are done, create a production ready version of the JS bundle:__
-
-`gulp build`
+This was built due to the fact that Galaxy uses lots of HTML, Canvas, and other
+non-scalable stuff in their workflow view. We also don't need some of the
+complexity of the workflow view like # of inputs or outputs in a particular
+tool, users are more focused on data flow.
 
 ## License
 
