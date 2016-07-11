@@ -1,9 +1,51 @@
-webpackJsonp([0,1],[
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "build";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	module.exports = __webpack_require__(43);
+	module.exports = __webpack_require__(45);
 
 
 /***/ },
@@ -18,8 +60,10 @@ webpackJsonp([0,1],[
 	__webpack_require__(39);
 	__webpack_require__(40);
 	__webpack_require__(1);
+	__webpack_require__(42);
 
-	var d3 = __webpack_require__(42);
+
+	var d3 = __webpack_require__(44);
 	var margin = {top: -5, right: -5, bottom: -5, left: -5},
 	    width = $("#right_col").width() + 20 - margin.left - margin.right,
 	    mapped_parameters = [
@@ -23981,6 +24025,33 @@ webpackJsonp([0,1],[
 /* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var map = {
+		"./index.html": 43
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 42;
+
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "index.html";
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// https://d3js.org Version 4.1.1. Copyright 2016 Mike Bostock.
 	(function (global, factory) {
 	   true ? factory(exports) :
@@ -40177,12 +40248,10 @@ webpackJsonp([0,1],[
 	}));
 
 /***/ },
-/* 43 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {var FileLoader = __webpack_require__(44);
-	var CommonsChunkPlugin = __webpack_require__(74);
-
+	/* WEBPACK VAR INJECTION */(function(__dirname) {var FileLoader = __webpack_require__(46);
 
 	module.exports = {
 	    entry: ["./index.js"],
@@ -40194,26 +40263,23 @@ webpackJsonp([0,1],[
 	    module: {
 	        loaders: [
 	            { test: /\.css$/, loader: "style!css" },
-	            { test: /\.html$/, loader: 'html' },
+	            { test: /\.(html)$/, loader: "file?name=[path][name].[ext]"},
 	            { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
 	        ]
 	    },
-	    plugins: [
-	        new CommonsChunkPlugin("commons.chunk.js")
-	    ]
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 44 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
 		Author Tobias Koppers @sokra
 	*/
-	var loaderUtils = __webpack_require__(45);
+	var loaderUtils = __webpack_require__(47);
 
 	module.exports = function(content) {
 		this.cacheable && this.cacheable();
@@ -40265,14 +40331,14 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 45 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var JSON5 = __webpack_require__(46);
-	var path = __webpack_require__(47);
-	var assign = __webpack_require__(49);
+	var JSON5 = __webpack_require__(48);
+	var path = __webpack_require__(49);
+	var assign = __webpack_require__(51);
 	var emojiRegex = /[\uD800-\uDFFF]./;
-	var emojiList = __webpack_require__(50).filter(function(emoji) {
+	var emojiList = __webpack_require__(52).filter(function(emoji) {
 		return emojiRegex.test(emoji)
 	});
 
@@ -40308,7 +40374,7 @@ webpackJsonp([0,1],[
 
 		var readLength = buffer.length;
 
-		var Big = __webpack_require__(51);
+		var Big = __webpack_require__(53);
 		Big.RM = Big.DP = 0;
 		var b = new Big(0);
 		for (var i = readLength - 1; i >= 0; i--) {
@@ -40490,7 +40556,7 @@ webpackJsonp([0,1],[
 	exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
 		hashType = hashType || "md5";
 		maxLength = maxLength || 9999;
-		var hash = __webpack_require__(52).createHash(hashType);
+		var hash = __webpack_require__(54).createHash(hashType);
 		hash.update(buffer);
 		if (digestType === "base26" || digestType === "base32" || digestType === "base36" ||
 		    digestType === "base49" || digestType === "base52" || digestType === "base58" ||
@@ -40573,7 +40639,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 46 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// json5.js
@@ -41346,7 +41412,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 47 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -41574,10 +41640,10 @@ webpackJsonp([0,1],[
 	    }
 	;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(48)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(50)))
 
 /***/ },
-/* 48 */
+/* 50 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -41702,7 +41768,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 49 */
+/* 51 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -41791,7 +41857,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 50 */
+/* 52 */
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -43459,7 +43525,7 @@ webpackJsonp([0,1],[
 	]
 
 /***/ },
-/* 51 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* big.js v3.1.3 https://github.com/MikeMcl/big.js/LICENCE */
@@ -44607,10 +44673,10 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 52 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(57)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(59)
 
 	function error () {
 	  var m = [].slice.call(arguments).join(' ')
@@ -44621,9 +44687,9 @@ webpackJsonp([0,1],[
 	    ].join('\n'))
 	}
 
-	exports.createHash = __webpack_require__(59)
+	exports.createHash = __webpack_require__(61)
 
-	exports.createHmac = __webpack_require__(71)
+	exports.createHmac = __webpack_require__(73)
 
 	exports.randomBytes = function(size, callback) {
 	  if (callback && callback.call) {
@@ -44644,7 +44710,7 @@ webpackJsonp([0,1],[
 	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
 	}
 
-	var p = __webpack_require__(72)(exports)
+	var p = __webpack_require__(74)(exports)
 	exports.pbkdf2 = p.pbkdf2
 	exports.pbkdf2Sync = p.pbkdf2Sync
 
@@ -44664,10 +44730,10 @@ webpackJsonp([0,1],[
 	  }
 	})
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55).Buffer))
 
 /***/ },
-/* 53 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -44680,9 +44746,9 @@ webpackJsonp([0,1],[
 
 	'use strict'
 
-	var base64 = __webpack_require__(54)
-	var ieee754 = __webpack_require__(55)
-	var isArray = __webpack_require__(56)
+	var base64 = __webpack_require__(56)
+	var ieee754 = __webpack_require__(57)
+	var isArray = __webpack_require__(58)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -46219,10 +46285,10 @@ webpackJsonp([0,1],[
 	  return i
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 54 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -46352,7 +46418,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 55 */
+/* 57 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -46442,7 +46508,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 56 */
+/* 58 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -46453,13 +46519,13 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 57 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, Buffer) {(function() {
 	  var g = ('undefined' === typeof window ? global : window) || {}
 	  _crypto = (
-	    g.crypto || g.msCrypto || __webpack_require__(58)
+	    g.crypto || g.msCrypto || __webpack_require__(60)
 	  )
 	  module.exports = function(size) {
 	    // Modern Browsers
@@ -46483,22 +46549,22 @@ webpackJsonp([0,1],[
 	  }
 	}())
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(53).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(55).Buffer))
 
 /***/ },
-/* 58 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 59 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(60)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(62)
 
-	var md5 = toConstructor(__webpack_require__(68))
-	var rmd160 = toConstructor(__webpack_require__(70))
+	var md5 = toConstructor(__webpack_require__(70))
+	var rmd160 = toConstructor(__webpack_require__(72))
 
 	function toConstructor (fn) {
 	  return function () {
@@ -46526,10 +46592,10 @@ webpackJsonp([0,1],[
 	  return createHash(alg)
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55).Buffer))
 
 /***/ },
-/* 60 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var exports = module.exports = function (alg) {
@@ -46538,16 +46604,16 @@ webpackJsonp([0,1],[
 	  return new Alg()
 	}
 
-	var Buffer = __webpack_require__(53).Buffer
-	var Hash   = __webpack_require__(61)(Buffer)
+	var Buffer = __webpack_require__(55).Buffer
+	var Hash   = __webpack_require__(63)(Buffer)
 
-	exports.sha1 = __webpack_require__(62)(Buffer, Hash)
-	exports.sha256 = __webpack_require__(66)(Buffer, Hash)
-	exports.sha512 = __webpack_require__(67)(Buffer, Hash)
+	exports.sha1 = __webpack_require__(64)(Buffer, Hash)
+	exports.sha256 = __webpack_require__(68)(Buffer, Hash)
+	exports.sha512 = __webpack_require__(69)(Buffer, Hash)
 
 
 /***/ },
-/* 61 */
+/* 63 */
 /***/ function(module, exports) {
 
 	module.exports = function (Buffer) {
@@ -46630,7 +46696,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 62 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -46642,7 +46708,7 @@ webpackJsonp([0,1],[
 	 * See http://pajhome.org.uk/crypt/md5 for details.
 	 */
 
-	var inherits = __webpack_require__(63).inherits
+	var inherits = __webpack_require__(65).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -46774,7 +46840,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 63 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -47302,7 +47368,7 @@ webpackJsonp([0,1],[
 	}
 	exports.isPrimitive = isPrimitive;
 
-	exports.isBuffer = __webpack_require__(64);
+	exports.isBuffer = __webpack_require__(66);
 
 	function objectToString(o) {
 	  return Object.prototype.toString.call(o);
@@ -47346,7 +47412,7 @@ webpackJsonp([0,1],[
 	 *     prototype.
 	 * @param {function} superCtor Constructor function to inherit prototype from.
 	 */
-	exports.inherits = __webpack_require__(65);
+	exports.inherits = __webpack_require__(67);
 
 	exports._extend = function(origin, add) {
 	  // Don't do anything if add isn't an object
@@ -47364,10 +47430,10 @@ webpackJsonp([0,1],[
 	  return Object.prototype.hasOwnProperty.call(obj, prop);
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(48)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(50)))
 
 /***/ },
-/* 64 */
+/* 66 */
 /***/ function(module, exports) {
 
 	module.exports = function isBuffer(arg) {
@@ -47378,7 +47444,7 @@ webpackJsonp([0,1],[
 	}
 
 /***/ },
-/* 65 */
+/* 67 */
 /***/ function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -47407,7 +47473,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 66 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -47419,7 +47485,7 @@ webpackJsonp([0,1],[
 	 *
 	 */
 
-	var inherits = __webpack_require__(63).inherits
+	var inherits = __webpack_require__(65).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -47560,10 +47626,10 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 67 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var inherits = __webpack_require__(63).inherits
+	var inherits = __webpack_require__(65).inherits
 
 	module.exports = function (Buffer, Hash) {
 	  var K = [
@@ -47810,7 +47876,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 68 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -47822,7 +47888,7 @@ webpackJsonp([0,1],[
 	 * See http://pajhome.org.uk/crypt/md5 for more info.
 	 */
 
-	var helpers = __webpack_require__(69);
+	var helpers = __webpack_require__(71);
 
 	/*
 	 * Calculate the MD5 of an array of little-endian words, and a bit length
@@ -47971,7 +48037,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 69 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
@@ -48009,10 +48075,10 @@ webpackJsonp([0,1],[
 
 	module.exports = { hash: hash };
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55).Buffer))
 
 /***/ },
-/* 70 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {
@@ -48221,13 +48287,13 @@ webpackJsonp([0,1],[
 
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55).Buffer))
 
 /***/ },
-/* 71 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(59)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(61)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -48271,13 +48337,13 @@ webpackJsonp([0,1],[
 	}
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55).Buffer))
 
 /***/ },
-/* 72 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var pbkdf2Export = __webpack_require__(73)
+	var pbkdf2Export = __webpack_require__(75)
 
 	module.exports = function (crypto, exports) {
 	  exports = exports || {}
@@ -48292,7 +48358,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 73 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function(crypto) {
@@ -48380,192 +48446,7 @@ webpackJsonp([0,1],[
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53).Buffer))
-
-/***/ },
-/* 74 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(__filename) {/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var nextIdent = 0;
-
-	function CommonsChunkPlugin(options, filenameTemplate, selectedChunks, minChunks) {
-		if(options && typeof options === "object" && !Array.isArray(options)) {
-			this.chunkNames = options.name || options.names;
-			this.filenameTemplate = options.filename;
-			this.minChunks = options.minChunks;
-			this.selectedChunks = options.chunks;
-			if(options.children) this.selectedChunks = false;
-			this.async = options.async;
-			this.minSize = options.minSize;
-		} else {
-			var chunkNames = options;
-			if(typeof filenameTemplate !== "string" && filenameTemplate !== null) {
-				minChunks = selectedChunks;
-				selectedChunks = filenameTemplate;
-				filenameTemplate = chunkNames;
-			}
-			if(!Array.isArray(selectedChunks) && typeof selectedChunks !== "boolean" && selectedChunks !== null) {
-				minChunks = selectedChunks;
-				selectedChunks = undefined;
-			}
-			this.chunkNames = chunkNames;
-			this.filenameTemplate = filenameTemplate;
-			this.minChunks = minChunks;
-			this.selectedChunks = selectedChunks;
-		}
-		this.ident = __filename + (nextIdent++);
-	}
-
-	module.exports = CommonsChunkPlugin;
-	CommonsChunkPlugin.prototype.apply = function(compiler) {
-		var chunkNames = this.chunkNames;
-		var filenameTemplate = this.filenameTemplate;
-		var minChunks = this.minChunks;
-		var selectedChunks = this.selectedChunks;
-		var async = this.async;
-		var minSize = this.minSize;
-		var ident = this.ident;
-		compiler.plugin("this-compilation", function(compilation) {
-			compilation.plugin(["optimize-chunks", "optimize-extracted-chunks"], function(chunks) {
-				// only optimize once
-				if(compilation[ident]) return;
-				compilation[ident] = true;
-
-				var commonChunks;
-				if(!chunkNames && (selectedChunks === false || async)) {
-					commonChunks = chunks;
-				} else if(Array.isArray(chunkNames) || typeof chunkNames === "string") {
-					commonChunks = [].concat(chunkNames).map(function(chunkName) {
-						var chunk = chunks.filter(function(chunk) {
-							return chunk.name === chunkName;
-						})[0];
-						if(!chunk) {
-							chunk = this.addChunk(chunkName);
-							chunk.initial = chunk.entry = true;
-						}
-						return chunk;
-					}, this);
-				} else {
-					throw new Error("Invalid chunkNames argument");
-				}
-				commonChunks.forEach(function processCommonChunk(commonChunk, idx) {
-					var commonModulesCount = [];
-					var commonModules = [];
-					var usedChunks;
-					if(Array.isArray(selectedChunks)) {
-						usedChunks = chunks.filter(function(chunk) {
-							if(chunk === commonChunk) return false;
-							return selectedChunks.indexOf(chunk.name) >= 0;
-						});
-					} else if(selectedChunks === false || async) {
-						usedChunks = (commonChunk.chunks || []).filter(function(chunk) {
-							// we can only move modules from this chunk if the "commonChunk" is the only parent
-							return async || chunk.parents.length === 1;
-						});
-					} else {
-						if(!commonChunk.entry) {
-							compilation.errors.push(new Error("CommonsChunkPlugin: While running in normal mode it's not allowed to use a non-entry chunk (" + commonChunk.name + ")"));
-							return;
-						}
-						usedChunks = chunks.filter(function(chunk) {
-							var found = commonChunks.indexOf(chunk);
-							if(found >= idx) return false;
-							return chunk.entry;
-						});
-					}
-					if(async) {
-						var asyncChunk = this.addChunk(typeof async === "string" ? async : undefined);
-						asyncChunk.chunkReason = "async commons chunk";
-						asyncChunk.extraAsync = true;
-						asyncChunk.addParent(commonChunk);
-						commonChunk.addChunk(asyncChunk);
-						commonChunk = asyncChunk;
-					}
-					usedChunks.forEach(function(chunk) {
-						chunk.modules.forEach(function(module) {
-							var idx = commonModules.indexOf(module);
-							if(idx < 0) {
-								commonModules.push(module);
-								commonModulesCount.push(1);
-							} else {
-								commonModulesCount[idx]++;
-							}
-						});
-					});
-					var reallyUsedChunks = [];
-					var reallyUsedModules = [];
-					commonModulesCount.forEach(function(count, idx) {
-						var module = commonModules[idx];
-						if(typeof minChunks === "function") {
-							if(!minChunks(module, count))
-								return;
-						} else if(count < (minChunks || Math.max(2, usedChunks.length))) {
-							return;
-						}
-						reallyUsedModules.push(module);
-					});
-					if(minSize) {
-						var size = reallyUsedModules.reduce(function(a, b) {
-							return a + b.size();
-						}, 0);
-						if(size < minSize)
-							return;
-					}
-					reallyUsedModules.forEach(function(module) {
-						usedChunks.forEach(function(chunk) {
-							if(module.removeChunk(chunk)) {
-								if(reallyUsedChunks.indexOf(chunk) < 0)
-									reallyUsedChunks.push(chunk);
-							}
-						});
-						commonChunk.addModule(module);
-						module.addChunk(commonChunk);
-					});
-					if(async) {
-						reallyUsedChunks.forEach(function(chunk) {
-							if(chunk.initial || chunk.entry)
-								return;
-							chunk.blocks.forEach(function(block) {
-								block.chunks.unshift(commonChunk);
-								commonChunk.addBlock(block);
-							});
-						});
-						asyncChunk.origins = reallyUsedChunks.map(function(chunk) {
-							return chunk.origins.map(function(origin) {
-								var newOrigin = Object.create(origin);
-								newOrigin.reasons = (origin.reasons || []).slice();
-								newOrigin.reasons.push("async commons");
-								return newOrigin;
-							});
-						}).reduce(function(arr, a) {
-							arr.push.apply(arr, a);
-							return arr;
-						}, []);
-					} else {
-						usedChunks.forEach(function(chunk) {
-							chunk.parents = [commonChunk];
-							commonChunk.chunks.push(chunk);
-							if(chunk.initial)
-								commonChunk.initial = true;
-							if(chunk.entry) {
-								commonChunk.entry = true;
-								chunk.entry = false;
-							}
-						});
-					}
-					if(filenameTemplate)
-						commonChunk.filenameTemplate = filenameTemplate;
-				}, this);
-				this.restartApplyPlugins();
-			});
-		});
-	};
-
-	/* WEBPACK VAR INJECTION */}.call(exports, "/index.js"))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55).Buffer))
 
 /***/ }
-]);
+/******/ ]);
