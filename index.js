@@ -1,11 +1,14 @@
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
-    width = 960 - margin.left - margin.right,
-    height = 800 - margin.top - margin.bottom
+    width = $("#right_col").width() + 20 - margin.left - margin.right,
+    height = $(window).height() - margin.top - margin.bottom
     graph = undefined,
     dirty = false;
 
+$("#left_col").height($(window).height())
+$("#left_col_contents").height( $(window).height() - $("#logo").height() - 20 )
+
 var zoom = d3.zoom()
-    .scaleExtent([1, 10])
+    .scaleExtent([0.2, 10])
     .on("zoom", zoomed);
 
 var drag = d3.drag()
