@@ -24,6 +24,6 @@
     "file-saver": "filesaver#^1.3.2",
     "Materialize": "materialize#^0.97.6",
     "d3": "^4.1.1",
-    "material-design-icons": "^2.2.3"
+    "google-material-icons": "^2.1.3"
   }
 }

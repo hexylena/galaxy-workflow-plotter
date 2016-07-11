@@ -4,9 +4,6 @@ var margin = {top: -5, right: -5, bottom: -5, left: -5},
     graph = undefined,
     dirty = false;
 
-$("#left_col").height($(window).height())
-$("#left_col_contents").height( $(window).height() - $("#logo").height() - 20 )
-
 var zoom = d3.zoom()
     .scaleExtent([0.2, 10])
     .on("zoom", zoomed);
@@ -265,11 +262,7 @@ function dottype(d) {
 
 function zoomed(x) {
     tx = d3.event.transform;
-    xy = tx.x + " " + tx.y;
-    s = tx.k;
-    txf = "translate(" + xy + ")";
-    txf += " scale(" + s + ")";
-    console.log(txf);
+    txf = "translate(" + tx.x + " " + tx.y + ") scale(" + tx.k + ")";
     container.attr("transform", txf);
 }
 
@@ -292,11 +285,3 @@ function dragended(d) {
     d3.select(this).classed("dragging", false);
     save();
 }
-
-
-$("#download").click(function(){
-    var blob = new Blob(
-        [$("#svg_container").html()],
-        {type: "image/svg+xml"});
-    saveAs(blob, "workflow_plot.svg");
-});
