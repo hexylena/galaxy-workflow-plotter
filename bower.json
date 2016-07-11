@@ -1,0 +1,27 @@
+{
+  "name": "galaxy-workflow-plotter",
+  "main": "index.js",
+  "homepage": "https://github.com/erasche/galaxy-workflow-plotter",
+  "authors": [
+    "Eric Rasche <rasche.eric@gmail.com>"
+  ],
+  "description": "Plot Galaxy Workflows",
+  "keywords": [
+    "d3",
+    "graphics",
+    "science"
+  ],
+  "license": "AGPL-3.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "file-saver": "filesaver#^1.3.2",
+    "Materialize": "materialize#^0.97.6"
+  }
+}
