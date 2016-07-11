@@ -1,11 +1,12 @@
 var FileLoader = require('file-loader');
+var GhPagesWebpackPlugin = require('gh-pages-webpack-plugin');
 
 module.exports = {
-    entry: ["./entry.js"],
+    entry: ["./index.js"],
     output: {
         path: __dirname + "/build",
         filename: "main.js",
-        publicPath: "/build"
+        publicPath: "build"
     },
     module: {
         loaders: [
