@@ -20,30 +20,87 @@
                     </h1>
                 </div>
                 <div id="left_col_contents">
-                    <p class="container">Make workflow plots great again.</p>
-                    <ul class="collapsible" data-collapsible="accordion">
-                        <li>
-                            <div id="help" class="collapsible-header blue lighten-3"><i class="material-icons">help</i>Help</div>
-                        </li>
-                        <li>
-                            <div class="collapsible-header"><i class="material-icons">blur_circular</i>Nodes</div>
-                            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-                        </li>
-                        <li>
-                            <div class="collapsible-header"><i class="material-icons">timeline</i>Links</div>
-                            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-                        </li>
-                        <li>
-                            <div class="collapsible-header">Highlighting</div>
-                            <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-                        </li>
-                    </ul>
+                    <div class="row">
+                        <p class="container">Make workflow plots great again.</p>
+                    </div>
+                    <div class="row">
+                        <div id="help" class="collapsible-header green darken-1"><i class="material-icons">help</i>Help (TODO)</div>
+                    </div>
+                    <div class="row">
+                        <div class="collapsible-header green darken-1">Tools</div>
 
+                        <div class="collapsible-header green lighten-2">Highlighted Tools</div>
+                        <table>
+                            <tr>
+                                <td>
+                                Background
+                                </td>
+                                <td>
+                                <input type='color' value='#ebd9b2' id="node_color"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                Border
+                                </td>
+                                <td>
+                                <input type='color' value='#d6b161' id="node_stroke_color"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                Font Color
+                                </td>
+                                <td>
+                                <input type='color' value='#000000' id="node_text_color"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                Thickness
+                                </td>
+                                <td>
+                                <input type='number' value='1' min="1" id="node_border_thickness"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="collapsible-header green lighten-2">De-emphasized Tools</div>
+                        <table>
+                            <tr>
+                                <td>
+                                Opacity
+                                </td>
+                                <td>
+                                <input type='number' value='30' max="100" min="0" id="unfocused_opacity"/>
+                                </td>
+                            </tr>
+                        </table>
 
-
-
-
-
+                    </div>
+                    <div class="row">
+                        <div class="collapsible-header green darken-1"><i class="material-icons">timeline</i>Links</div>
+                        <table>
+                            <tr>
+                                <td>
+                                Color
+                                </td>
+                                <td>
+                                <input type='color' value='#000000' id="link_stroke"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                Thickness
+                                </td>
+                                <td>
+                                <input type='number' value='1' min="1" id="link_thickness"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="collapsible-header green darken-1">Highlighting</div>
+                    </div>
                 </div>
 
             </div>

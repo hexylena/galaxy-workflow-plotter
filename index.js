@@ -1,7 +1,39 @@
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
     width = $("#right_col").width() + 20 - margin.left - margin.right,
+    mapped_parameters = [
+        'node_color',
+        'node_stroke_color',
+        'node_text_color',
+        'node_border_thickness',
+        'link_stroke',
+        'link_thickness',
+        'unfocused_opacity',
+    ],
     height = $(window).height() - margin.top - margin.bottom
-    graph = undefined,
+    default_config = {
+        node_color: '#ebd9b2',
+        node_stroke_color: '#d6b161',
+        node_text_color: '#000000',
+        node_border_thickness: 1,
+
+        link_stroke: '#000000',
+        link_thickness: 1,
+        unfocused_opacity: 30,
+
+        font_family: 'Ubuntu Mono, monospace',
+        node_height: 20,
+        node_width: 80,
+        node_padding: 5,
+    },
+    graph = {
+        config: default_config
+    },
+    node_color_node = $("#node_color"),
+    node_stroke_color_node = $("#node_stroke_color"),
+    node_text_color_node = $("#node_text_color"),
+    node_border_thickness_node = $("#node_border_thickness"),
+    link_stroke_node = $("#link_stroke"),
+    link_thickness_node = $("#link_thickness"),
     dirty = false;
 
 var zoom = d3.zoom()
@@ -30,15 +62,6 @@ var container = svg.append("g");
 
 var cachedData = {};
 var simulation = d3.forceSimulation();
-var config = {
-    default_node_color: '#ebd9b2',
-    default_node_stroke_color: '#d6b161',
-    font_family: 'Ubuntu Mono, monospace',
-    node_height: 20,
-    node_width: 80,
-    node_padding: 5,
-    unfocused: 0.3,
-}
 
 var positionOfNode = function(graph, id){
     if(isNaN(parseInt(id))){
@@ -109,6 +132,7 @@ var processGalaxyWorkflowToGraph = function(ga){
 function save(){
     if(dirty){
         console.log("Saving");
+        console.log(graph.config);
         sessionStorage.setItem('graph', JSON.stringify(graph));
     }
     dirty = false;
@@ -116,9 +140,21 @@ function save(){
 
 function restore(){
     graph = JSON.parse(sessionStorage.getItem('graph'));
+
+    for(var idx in mapped_parameters){
+        $("#" + mapped_parameters[idx]).val(graph.config[mapped_parameters[idx]])
+    }
+    console.log(graph);
     dirty = false;
 }
 
+$("#node_color")            .on('input', function(event){ graph.config.node_color = event.target.value; dirty = true; })
+$("#node_stroke_color")     .on('input', function(event){ graph.config.node_stroke_color = event.target.value; dirty = true; })
+$("#node_text_color")       .on('input', function(event){ graph.config.node_text_color = event.target.value; dirty = true; })
+$("#node_border_thickness") .on('input', function(event){ graph.config.node_border_thickness = event.target.value; dirty = true; })
+$("#link_stroke")           .on('input', function(event){ graph.config.link_stroke = event.target.value; dirty = true; })
+$("#link_thickness")        .on('input', function(event){ graph.config.link_thickness = event.target.value; dirty = true; })
+$("#unfocused_opacity")     .on('input', function(event){ graph.config.unfocused_opacity = event.target.value; dirty = true; })
 
 d3.json("ex.ga", function(error, loadedGraph) {
     if (error) throw error;
@@ -127,6 +163,7 @@ d3.json("ex.ga", function(error, loadedGraph) {
 
     if (sessionStorage.getItem("graph") === null) {
         graph = processGalaxyWorkflowToGraph(loadedGraph);
+        graph.config = default_config;
         save();
     } else {
         restore()
@@ -165,8 +202,8 @@ d3.json("ex.ga", function(error, loadedGraph) {
 
     var node = node_group
         .append("rect")
-        .attr("height", config.node_height + 2 * config.node_padding)
-        .attr("width", config.node_width + 2 * config.node_padding)
+        .attr("height", graph.config.node_height + 2 * graph.config.node_padding)
+        .attr("width", graph.config.node_width + 2 * graph.config.node_padding)
         ;
 
     var labels = node_group
@@ -205,9 +242,9 @@ d3.json("ex.ga", function(error, loadedGraph) {
                 } else {
                     tx = 0;
                 }
-                ty = target.y + config.node_height / 2;
+                ty = target.y + graph.config.node_height / 2;
                 sx = source.x;
-                sy = source.y + config.node_height / 2;
+                sy = source.y + graph.config.node_height / 2;
                 if(!tx || !ty || !sx || !sy){
                     return 'M100,100'
                 }
@@ -226,31 +263,35 @@ d3.json("ex.ga", function(error, loadedGraph) {
                 data = 'M' + sx + ',' + sy + 'C' + cp1x +',' + sy + ' ' + cp2x +',' + ty + ' ' + tx +',' + ty
                 return data;
             })
+            .attr("stroke", graph.config.link_stroke)
+            .attr("stroke-width", graph.config.link_thickness)
             ;
 
         node
-            .attr("fill", config.default_node_color)
-            .attr("stroke", config.default_node_stroke_color)
+            .attr("fill",   graph.config.node_color)
+            .attr("stroke", graph.config.node_stroke_color)
+            .attr("stroke-width", graph.config.node_border_thickness)
             .attr("x", function(d) { return d.x; })
             .attr("y", function(d) { return d.y; });
 
         labels
             .attr("stroke", function(d){
                 cachedData[d.id] = {
-                    width: this.getComputedTextLength() + 2 * config.node_padding,
+                    width: this.getComputedTextLength() + 2 * graph.config.node_padding,
                     focus: (cachedData[d.id]) ? cachedData[d.id].focus : d.focus,
                 }
                 d3.select(this.parentNode.children[0]).attr('width', cachedData[d.id].width);
             })
-            .attr("font-family", config.font_family)
+            .attr("font-family", graph.config.font_family)
+            .attr("fill", graph.config.node_text_color)
             .attr("opacity", function(d){
                 if(cachedData[d.id].focus){
                     return 1
                 }
-                return config.unfocused;
+                return graph.config.unfocused_opacity / 100;
             })
-            .attr("x", function(d) { return d.x + config.node_padding; })
-            .attr("y", function(d) { return d.y + 15 + config.node_padding; });//TODO
+            .attr("x", function(d) { return d.x + graph.config.node_padding; })
+            .attr("y", function(d) { return d.y + 15 + graph.config.node_padding; });//TODO
     }
 });
 
