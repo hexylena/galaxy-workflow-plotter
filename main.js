@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "build";
+/******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -17192,7 +17192,7 @@
 	    output: {
 	        path: __dirname + "/build",
 	        filename: "main.js",
-	        publicPath: "build",
+	        publicPath: "",
 	    },
 	    module: {
 	        loaders: [
