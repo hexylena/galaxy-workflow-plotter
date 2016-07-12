@@ -10,6 +10,8 @@
     "html-webpack-plugin": "^2.22.0",
     "http-server": "^0.6.1",
     "style-loader": "^0.13.1",
+    "svg-loader": "0.0.2",
+    "svg-url-loader": "^1.0.3",
     "url-loader": "^0.5.7"
   },
   "dependencies": {

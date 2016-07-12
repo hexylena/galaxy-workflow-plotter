@@ -6,7 +6,7 @@ require("./bower_components/Materialize/dist/js/materialize.min.js");
 require("./bower_components/d3/d3.min.js");
 require("./bower_components/file-saver/FileSaver.js");
 require("./index.js");
-require.context("./", true, /^\.\/.*\.html/);
+require.context("./", false, /^\.\/.*\.html/);
 
 
 var d3 = require("./bower_components/d3/d3.js");
