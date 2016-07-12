@@ -4,8 +4,8 @@ module.exports = {
     entry: ["./index.js"],
     output: {
         path: __dirname + "/build",
-        filename: "main.js",
-        publicPath: "",
+        filename: "index.js",
+        publicPath: "build/",
     },
     module: {
         loaders: [
