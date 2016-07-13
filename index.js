@@ -4,7 +4,7 @@ require.context("./", false, /^\.\/.*\.html/);
 var fileSaver = require("./bower_components/file-saver/FileSaver.js");
 
 var Raven  = require("./bower_components/raven-js/dist/raven.js");
-Raven.config('http://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
+Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
 
 var d3 = require("./bower_components/d3/d3.js");
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
@@ -127,9 +127,8 @@ function save(){
         console.log("Saving");
         console.log(graph.config);
         sessionStorage.setItem('graph', JSON.stringify(graph));
-        Materialize.toast('Saved', 1000)
+        //Materialize.toast('Saved', 1000)
         dirty = false;
-        int();
     }
 }
 
@@ -375,4 +374,8 @@ $("#uploaded_workflow").on('change', function(evt){
 
 $("#upload").click(function(){
     $("#uploaded_workflow")[0].click();
+});
+
+$("#help").click(function(){
+    int(); // intentional
 });
