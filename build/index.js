@@ -58,7 +58,7 @@
 	var fileSaver = __webpack_require__(8);
 
 	var Raven  = __webpack_require__(11);
-	Raven.config('http://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
+	Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
 
 	var d3 = __webpack_require__(12);
 	var margin = {top: -5, right: -5, bottom: -5, left: -5},
@@ -181,9 +181,8 @@
 	        console.log("Saving");
 	        console.log(graph.config);
 	        sessionStorage.setItem('graph', JSON.stringify(graph));
-	        Materialize.toast('Saved', 1000)
+	        //Materialize.toast('Saved', 1000)
 	        dirty = false;
-	        int();
 	    }
 	}
 
@@ -429,6 +428,10 @@
 
 	$("#upload").click(function(){
 	    $("#uploaded_workflow")[0].click();
+	});
+
+	$("#help").click(function(){
+	    int(); // intentional
 	});
 
 
