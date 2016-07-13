@@ -1,5 +1,4 @@
 require("./index.css");
-require("./bower_components/file-saver/FileSaver.js");
 require("./index.js");
 require.context("./", false, /^\.\/.*\.html/);
 
@@ -40,6 +39,8 @@ var margin = {top: -5, right: -5, bottom: -5, left: -5},
     node_border_thickness_node = $("#node_border_thickness"),
     link_stroke_node = $("#link_stroke"),
     link_thickness_node = $("#link_thickness"),
+    container = null,
+    simulation = null,
     dirty = false;
 
 var zoom = d3.zoom()
@@ -50,24 +51,6 @@ var drag = d3.drag()
     .on("start", dragstarted)
     .on("drag", dragged)
     .on("end", dragended);
-
-var svg = d3.select("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
-    .call(zoom);
-
-var rect = svg.append("rect")
-    .attr("width", width)
-    .attr("height", height)
-    .style("fill", "none")
-    .style("pointer-events", "all");
-
-var container = svg.append("g");
-
-var cachedData = {};
-var simulation = d3.forceSimulation();
 
 var positionOfNode = function(graph, id){
     if(isNaN(parseInt(id))){
@@ -140,8 +123,9 @@ function save(){
         console.log("Saving");
         console.log(graph.config);
         sessionStorage.setItem('graph', JSON.stringify(graph));
+        Materialize.toast('Saved', 1000)
+        dirty = false;
     }
-    dirty = false;
 }
 
 function restore(){
@@ -161,18 +145,27 @@ $("#link_stroke")           .on('input', function(event){ graph.config.link_stro
 $("#link_thickness")        .on('input', function(event){ graph.config.link_thickness = event.target.value; dirty = true; })
 $("#unfocused_opacity")     .on('input', function(event){ graph.config.unfocused_opacity = event.target.value; dirty = true; })
 
-d3.json("ex.ga", function(error, loadedGraph) {
-    if (error) throw error;
+function draw(){
+    $("svg").empty();
 
-    var obj = JSON.parse(sessionStorage.getItem('user')); // An object :D
+    var svg = d3.select("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
+        .call(zoom);
 
-    if (sessionStorage.getItem("graph") === null) {
-        graph = processGalaxyWorkflowToGraph(loadedGraph);
-        graph.config = default_config;
-        save();
-    } else {
-        restore()
-    }
+    var rect = svg.append("rect")
+        .attr("width", width)
+        .attr("height", height)
+        .style("fill", "none")
+        .style("pointer-events", "all");
+
+    container = svg.append("g");
+    console.log(container);
+
+    var cachedData = {};
+    simulation = d3.forceSimulation();
 
     var link = container.append("g")
         .attr("class", "links")
@@ -217,25 +210,10 @@ d3.json("ex.ga", function(error, loadedGraph) {
         .text(function(d){ return d.name; })
         ;
 
-    //function brushmove(target, type, selection, sourceEvent){
-        //console.log(selection[0])
-    //}
-
-    //var brush = d3.brush()
-        //;
-
-    //svg.append("g")
-        //.attr("class", "brush")
-        //.call(d3.brush().on("brush", brushmove).on("end", brushmove))
-        //;
-
     simulation
         .nodes(graph.nodes)
         .on("tick", ticked)
         ;
-
-    //simulation.force("link")
-        //.links(graph.links);
 
     function ticked() {
         link
@@ -298,7 +276,7 @@ d3.json("ex.ga", function(error, loadedGraph) {
             .attr("x", function(d) { return d.x + graph.config.node_padding; })
             .attr("y", function(d) { return d.y + 15 + graph.config.node_padding; });//TODO
     }
-});
+};
 
 function dottype(d) {
   d.x = +d.x;
@@ -332,6 +310,30 @@ function dragended(d) {
     save();
 }
 
+function load(){
+    console.log("Loading")
+    if (sessionStorage.getItem("graph") === null) {
+        console.log("No stored graph")
+        d3.json("ex.ga", function(error, loadedGraph){
+            if (error){
+                Materialize.toast(error, 4000)
+                throw error;
+            }
+            graph = processGalaxyWorkflowToGraph(loadedGraph);
+            graph.config = default_config;
+            save();
+            draw();
+        })
+    } else {
+        console.log("Restoring")
+        restore();
+        draw();
+    }
+}
+
+load();
+
+require("./bower_components/file-saver/FileSaver.js");
 $("#left_col").height($(window).height())
 $("#left_col_contents").height( $(window).height() - $("#logo").height() - 20 )
 $("#download").click(function(){
@@ -350,9 +352,13 @@ $("#uploaded_workflow").on('change', function(evt){
             console.log(event.target.result);
             try{
                 var data = JSON.parse(event.target.result);
+                graph = null;
                 graph = processGalaxyWorkflowToGraph(data);
                 graph.config = default_config;
-                save();
+                sessionStorage.setItem('graph', JSON.stringify(graph));
+                sessionStorage.setItem('graph', JSON.stringify(graph));
+                Materialize.toast('Saved', 1000)
+                draw();
             } catch(ex) {
                   Materialize.toast('Failed to parse JSON', 4000) // 4000 is the duration of the toast
             }
