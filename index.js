@@ -1,7 +1,7 @@
 require("./index.css");
 require("./index.js");
 require.context("./", false, /^\.\/.*\.html/);
-
+var fileSaver = require("./bower_components/file-saver/FileSaver.js");
 var d3 = require("./bower_components/d3/d3.js");
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
     width = $("#right_col").width() + 20 - margin.left - margin.right,
@@ -288,6 +288,7 @@ function zoomed(x) {
     tx = d3.event.transform;
     txf = "translate(" + tx.x + " " + tx.y + ") scale(" + tx.k + ")";
     container.attr("transform", txf);
+    //$("#position").text(parseInt(tx.x) + ", " + parseInt(tx.y));
 }
 
 function dragstarted(d) {
@@ -333,14 +334,13 @@ function load(){
 
 load();
 
-require("./bower_components/file-saver/FileSaver.js");
-$("#left_col").height($(window).height())
-$("#left_col_contents").height( $(window).height() - $("#logo").height() - 20 )
+$("#left_col").height($(window).height() + 15);
+$("#left_col_contents").height( $(window).height() - $("#logo").height() - 20 + 15)
 $("#download").click(function(){
     var blob = new Blob(
         [$("#svg_container").html()],
         {type: "image/svg+xml"});
-    saveAs(blob, "workflow_plot.svg");
+    fileSaver.saveAs(blob, "workflow_plot.svg");
 });
 
 $("#uploaded_workflow").on('change', function(evt){

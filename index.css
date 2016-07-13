@@ -6,6 +6,12 @@ svg {
     /*border: 1px solid black;*/
 }
 
+#position {
+    position: absolute;
+    bottom:   40px;
+    right: 40px;
+}
+
 #upload {
     position: absolute;
     top:   40px;
@@ -34,6 +40,14 @@ body, body div.row{
 
 #left_col_contents{
     overflow-y: scroll;
+    margin-top: -15px;
+    z-index: 2;
+}
+
+#logo {
+     position: relative;
+     z-index: 1;
+     background: white;
 }
 
 #logo img{
