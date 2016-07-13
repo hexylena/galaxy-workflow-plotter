@@ -1023,7 +1023,7 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var require;/*! Raven.js 3.2.1 (bbd229d) | github.com/getsentry/raven-js */
+	var require;var require;/*! Raven.js 3.1.0 (d781478) | github.com/getsentry/raven-js */
 
 	/*
 	 * Includes TraceKit
@@ -1175,7 +1175,7 @@
 	    // webpack (using a build step causes webpack #1617). Grunt verifies that
 	    // this value matches package.json during build.
 	    //   See: https://github.com/getsentry/raven-js/issues/465
-	    VERSION: '3.2.1',
+	    VERSION: '3.1.0',
 
 	    debug: false,
 
@@ -1540,10 +1540,7 @@
 	     * @return {Raven}
 	     */
 	    setDataCallback: function(callback) {
-	        var original = this._globalOptions.dataCallback;
-	        this._globalOptions.dataCallback = isFunction(callback)
-	          ? function (data) { return callback(data, original); }
-	          : callback;
+	        this._globalOptions.dataCallback = callback;
 
 	        return this;
 	    },
@@ -1556,10 +1553,7 @@
 	     * @return {Raven}
 	     */
 	    setShouldSendCallback: function(callback) {
-	        var original = this._globalOptions.shouldSendCallback;
-	        this._globalOptions.shouldSendCallback = isFunction(callback)
-	            ? function (data) { return callback(data, original); }
-	            : callback;
+	        this._globalOptions.shouldSendCallback = callback;
 
 	        return this;
 	    },
@@ -1909,8 +1903,8 @@
 	        // to the document. Do this before we instrument addEventListener.
 	        if (this._hasDocument) {
 	            if (document.addEventListener) {
-	                document.addEventListener('click', self._breadcrumbEventHandler('click'), false);
-	                document.addEventListener('keypress', self._keypressEventHandler(), false);
+	                document.addEventListener('click', self._breadcrumbEventHandler('click'));
+	                document.addEventListener('keypress', self._keypressEventHandler());
 	            }
 	            else {
 	                // IE8 Compatibility
@@ -1984,13 +1978,7 @@
 	        }
 
 	        // record navigation (URL) changes
-	        // NOTE: in Chrome App environment, touching history.pushState, *even inside
-	        //       a try/catch block*, will cause Chrome to output an error to console.error
-	        // borrowed from: https://github.com/angular/angular.js/pull/13945/files
-	        var chrome = window.chrome;
-	        var isChromePackagedApp = chrome && chrome.app && chrome.app.runtime;
-	        var hasPushState = !isChromePackagedApp && window.history && history.pushState;
-	        if (hasPushState) {
+	        if ('history' in window && history.pushState) {
 	            // TODO: remove onpopstate handler on uninstall()
 	            var oldOnPopState = window.onpopstate;
 	            window.onpopstate = function () {
@@ -2157,11 +2145,15 @@
 	    },
 
 	    _processException: function(type, message, fileurl, lineno, frames, options) {
-	        var stacktrace;
+	        var stacktrace, fullMessage;
 
 	        if (!!this._globalOptions.ignoreErrors.test && this._globalOptions.ignoreErrors.test(message)) return;
 
 	        message += '';
+	        message = truncate(message, this._globalOptions.maxMessageLength);
+
+	        fullMessage = (type ? type + ': ' : '') + message;
+	        fullMessage = truncate(fullMessage, this._globalOptions.maxMessageLength);
 
 	        if (frames && frames.length) {
 	            fileurl = frames[0].filename || fileurl;
@@ -2191,7 +2183,8 @@
 	                    stacktrace: stacktrace
 	                }]
 	            },
-	            culprit: fileurl
+	            culprit: fileurl,
+	            message: fullMessage
 	        }, options);
 
 	        // Fire away!
@@ -2202,9 +2195,7 @@
 	        // For now, we only want to truncate the two different messages
 	        // but this could/should be expanded to just trim everything
 	        var max = this._globalOptions.maxMessageLength;
-	        if (data.message) {
-	            data.message = truncate(data.message, max);
-	        }
+	        data.message = truncate(data.message, max);
 	        if (data.exception) {
 	            var exception = data.exception.values[0];
 	            exception.value = truncate(exception.value, max);
@@ -2315,14 +2306,10 @@
 	            auth.sentry_secret = this._globalSecret;
 	        }
 
-	        var exception = data.exception && data.exception.values[0];
 	        this.captureBreadcrumb({
 	            category: 'sentry',
-	            message: exception
-	                ? (exception.type ? exception.type + ': ' : '') + exception.message
-	                : data.message,
-	            event_id: data.event_id,
-	            level: data.level || 'error' // presume error unless specified
+	            message: data.message,
+	            event_id: data.event_id
 	        });
 
 	        var url = this._globalEndpoint;
@@ -2388,6 +2375,13 @@
 	        //       HTTP header) so as to avoid preflight CORS requests
 	        request.open('POST', url + '?' + urlencode(opts.auth));
 	        request.send(JSON.stringify(opts.data));
+	    },
+
+	    // Note: this is shitty, but I can't figure out how to get
+	    // sinon to stub document.createElement without breaking everything
+	    // so this wrapper is just so I can stub it for tests.
+	    _newImage: function() {
+	        return document.createElement('img');
 	    },
 
 	    _logDebug: function(level) {
@@ -3089,7 +3083,7 @@
 
 	        var chrome = /^\s*at (.*?) ?\(((?:file|https?|blob|chrome-extension|native|eval|<anonymous>).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i,
 	            gecko = /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|\[native).*?)(?::(\d+))?(?::(\d+))?\s*$/i,
-	            winjs = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
+	            winjs = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:ms-appx|https?|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
 	            lines = ex.stack.split('\n'),
 	            stack = [],
 	            parts,
