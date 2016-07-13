@@ -1,4 +1,3 @@
-//require("./bower_components/google-material-icons/dist/material-icons-font.min.css");
 require("./index.css");
 require("./bower_components/file-saver/FileSaver.js");
 require("./index.js");
@@ -151,7 +150,6 @@ function restore(){
     for(var idx in mapped_parameters){
         $("#" + mapped_parameters[idx]).val(graph.config[mapped_parameters[idx]])
     }
-    console.log(graph);
     dirty = false;
 }
 
@@ -341,4 +339,31 @@ $("#download").click(function(){
         [$("#svg_container").html()],
         {type: "image/svg+xml"});
     saveAs(blob, "workflow_plot.svg");
+});
+
+$("#uploaded_workflow").on('change', function(evt){
+    var file = evt.target.files[0]
+    var reader = new FileReader();
+
+    reader.onloadend = function(event) {
+        if (event.target.readyState == FileReader.DONE) { // DONE == 2
+            console.log(event.target.result);
+            try{
+                var data = JSON.parse(event.target.result);
+                graph = processGalaxyWorkflowToGraph(data);
+                graph.config = default_config;
+                save();
+            } catch(ex) {
+                  Materialize.toast('Failed to parse JSON', 4000) // 4000 is the duration of the toast
+            }
+        }
+    };
+
+    var blob = file.slice(0, file.size);
+    reader.readAsBinaryString(blob);
+
+});
+
+$("#upload").click(function(){
+    $("#uploaded_workflow")[0].click();
 });

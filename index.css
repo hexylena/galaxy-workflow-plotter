@@ -6,9 +6,15 @@ svg {
     /*border: 1px solid black;*/
 }
 
-#download {
+#upload {
     position: absolute;
     top:   40px;
+    right: 40px;
+}
+
+#download {
+    position: absolute;
+    top:   120px;
     right: 40px;
 }
 
