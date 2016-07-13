@@ -2,6 +2,10 @@ require("./index.css");
 require("./index.js");
 require.context("./", false, /^\.\/.*\.html/);
 var fileSaver = require("./bower_components/file-saver/FileSaver.js");
+
+var Raven  = require("./bower_components/raven-js/dist/raven.js");
+Raven.config('http://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
+
 var d3 = require("./bower_components/d3/d3.js");
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
     width = $("#right_col").width() + 20 - margin.left - margin.right,
@@ -125,6 +129,7 @@ function save(){
         sessionStorage.setItem('graph', JSON.stringify(graph));
         Materialize.toast('Saved', 1000)
         dirty = false;
+        int();
     }
 }
 
@@ -226,7 +231,11 @@ function draw(){
                     tx = 0;
                 }
                 ty = target.y + graph.config.node_height / 2;
-                sx = source.x;
+                if(!source.x){
+                    sx = 0;
+                }else{
+                    sx = source.x;
+                }
                 sy = source.y + graph.config.node_height / 2;
                 if(!tx || !ty || !sx || !sy){
                     return 'M100,100'
@@ -277,12 +286,6 @@ function draw(){
             .attr("y", function(d) { return d.y + 15 + graph.config.node_padding; });//TODO
     }
 };
-
-function dottype(d) {
-  d.x = +d.x;
-  d.y = +d.y;
-  return d;
-}
 
 function zoomed(x) {
     tx = d3.event.transform;
