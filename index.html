@@ -9,8 +9,8 @@
     </head>
 <body>
 <div class="row">
-        <div id="left_col" class="col m3 z-depth-2">
-                <div id="logo" class="z-depth-1">
+        <div id="left_col" class="col m3 z-depth-3">
+                <div id="logo" class="z-depth-2">
                     <img src="logo.svg">
                     <h1>
                     Galactic Workflow Plotter
@@ -104,7 +104,10 @@
                 <div id="svg_container">
                     <svg width="500" height="500"></svg>
                 </div>
+                <input type="file" id="uploaded_workflow" name="uploaded_workflow" style="visibility:none"/>
+                <a id="upload" class="btn-floating btn-large waves-effect waves-light green lighten-2"><i class="material-icons">file_upload</i></a>
                 <a id="download" class="btn-floating btn-large waves-effect waves-light green"><i class="material-icons">file_download</i></a>
+                <span id="position"></span>
             </div>
         </div>
         <script src="build/index.js"></script>

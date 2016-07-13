@@ -52,12 +52,10 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	//require("./bower_components/google-material-icons/dist/material-icons-font.min.css");
 	__webpack_require__(2);
-	__webpack_require__(6);
 	__webpack_require__(1);
-	__webpack_require__(9);
-
+	__webpack_require__(6);
+	var fileSaver = __webpack_require__(8);
 	var d3 = __webpack_require__(11);
 	var margin = {top: -5, right: -5, bottom: -5, left: -5},
 	    width = $("#right_col").width() + 20 - margin.left - margin.right,
@@ -95,6 +93,8 @@
 	    node_border_thickness_node = $("#node_border_thickness"),
 	    link_stroke_node = $("#link_stroke"),
 	    link_thickness_node = $("#link_thickness"),
+	    container = null,
+	    simulation = null,
 	    dirty = false;
 
 	var zoom = d3.zoom()
@@ -105,24 +105,6 @@
 	    .on("start", dragstarted)
 	    .on("drag", dragged)
 	    .on("end", dragended);
-
-	var svg = d3.select("svg")
-	    .attr("width", width + margin.left + margin.right)
-	    .attr("height", height + margin.top + margin.bottom)
-	    .append("g")
-	    .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
-	    .call(zoom);
-
-	var rect = svg.append("rect")
-	    .attr("width", width)
-	    .attr("height", height)
-	    .style("fill", "none")
-	    .style("pointer-events", "all");
-
-	var container = svg.append("g");
-
-	var cachedData = {};
-	var simulation = d3.forceSimulation();
 
 	var positionOfNode = function(graph, id){
 	    if(isNaN(parseInt(id))){
@@ -195,8 +177,9 @@
 	        console.log("Saving");
 	        console.log(graph.config);
 	        sessionStorage.setItem('graph', JSON.stringify(graph));
+	        Materialize.toast('Saved', 1000)
+	        dirty = false;
 	    }
-	    dirty = false;
 	}
 
 	function restore(){
@@ -205,7 +188,6 @@
 	    for(var idx in mapped_parameters){
 	        $("#" + mapped_parameters[idx]).val(graph.config[mapped_parameters[idx]])
 	    }
-	    console.log(graph);
 	    dirty = false;
 	}
 
@@ -217,18 +199,27 @@
 	$("#link_thickness")        .on('input', function(event){ graph.config.link_thickness = event.target.value; dirty = true; })
 	$("#unfocused_opacity")     .on('input', function(event){ graph.config.unfocused_opacity = event.target.value; dirty = true; })
 
-	d3.json("ex.ga", function(error, loadedGraph) {
-	    if (error) throw error;
+	function draw(){
+	    $("svg").empty();
 
-	    var obj = JSON.parse(sessionStorage.getItem('user')); // An object :D
+	    var svg = d3.select("svg")
+	        .attr("width", width + margin.left + margin.right)
+	        .attr("height", height + margin.top + margin.bottom)
+	        .append("g")
+	        .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
+	        .call(zoom);
 
-	    if (sessionStorage.getItem("graph") === null) {
-	        graph = processGalaxyWorkflowToGraph(loadedGraph);
-	        graph.config = default_config;
-	        save();
-	    } else {
-	        restore()
-	    }
+	    var rect = svg.append("rect")
+	        .attr("width", width)
+	        .attr("height", height)
+	        .style("fill", "none")
+	        .style("pointer-events", "all");
+
+	    container = svg.append("g");
+	    console.log(container);
+
+	    var cachedData = {};
+	    simulation = d3.forceSimulation();
 
 	    var link = container.append("g")
 	        .attr("class", "links")
@@ -273,25 +264,10 @@
 	        .text(function(d){ return d.name; })
 	        ;
 
-	    //function brushmove(target, type, selection, sourceEvent){
-	        //console.log(selection[0])
-	    //}
-
-	    //var brush = d3.brush()
-	        //;
-
-	    //svg.append("g")
-	        //.attr("class", "brush")
-	        //.call(d3.brush().on("brush", brushmove).on("end", brushmove))
-	        //;
-
 	    simulation
 	        .nodes(graph.nodes)
 	        .on("tick", ticked)
 	        ;
-
-	    //simulation.force("link")
-	        //.links(graph.links);
 
 	    function ticked() {
 	        link
@@ -354,7 +330,7 @@
 	            .attr("x", function(d) { return d.x + graph.config.node_padding; })
 	            .attr("y", function(d) { return d.y + 15 + graph.config.node_padding; });//TODO
 	    }
-	});
+	};
 
 	function dottype(d) {
 	  d.x = +d.x;
@@ -366,6 +342,7 @@
 	    tx = d3.event.transform;
 	    txf = "translate(" + tx.x + " " + tx.y + ") scale(" + tx.k + ")";
 	    container.attr("transform", txf);
+	    //$("#position").text(parseInt(tx.x) + ", " + parseInt(tx.y));
 	}
 
 	function dragstarted(d) {
@@ -388,13 +365,67 @@
 	    save();
 	}
 
-	$("#left_col").height($(window).height())
-	$("#left_col_contents").height( $(window).height() - $("#logo").height() - 20 )
+	function load(){
+	    console.log("Loading")
+	    if (sessionStorage.getItem("graph") === null) {
+	        console.log("No stored graph")
+	        d3.json("ex.ga", function(error, loadedGraph){
+	            if (error){
+	                Materialize.toast(error, 4000)
+	                throw error;
+	            }
+	            graph = processGalaxyWorkflowToGraph(loadedGraph);
+	            graph.config = default_config;
+	            save();
+	            draw();
+	        })
+	    } else {
+	        console.log("Restoring")
+	        restore();
+	        draw();
+	    }
+	}
+
+	load();
+
+	$("#left_col").height($(window).height() + 15);
+	$("#left_col_contents").height( $(window).height() - $("#logo").height() - 20 + 15)
 	$("#download").click(function(){
 	    var blob = new Blob(
 	        [$("#svg_container").html()],
 	        {type: "image/svg+xml"});
-	    saveAs(blob, "workflow_plot.svg");
+	    fileSaver.saveAs(blob, "workflow_plot.svg");
+	});
+
+	$("#uploaded_workflow").on('change', function(evt){
+	    var file = evt.target.files[0]
+	    var reader = new FileReader();
+
+	    reader.onloadend = function(event) {
+	        if (event.target.readyState == FileReader.DONE) { // DONE == 2
+	            console.log(event.target.result);
+	            try{
+	                var data = JSON.parse(event.target.result);
+	                graph = null;
+	                graph = processGalaxyWorkflowToGraph(data);
+	                graph.config = default_config;
+	                sessionStorage.setItem('graph', JSON.stringify(graph));
+	                sessionStorage.setItem('graph', JSON.stringify(graph));
+	                Materialize.toast('Saved', 1000)
+	                draw();
+	            } catch(ex) {
+	                  Materialize.toast('Failed to parse JSON', 4000) // 4000 is the duration of the toast
+	            }
+	        }
+	    };
+
+	    var blob = file.slice(0, file.size);
+	    reader.readAsBinaryString(blob);
+
+	});
+
+	$("#upload").click(function(){
+	    $("#uploaded_workflow")[0].click();
 	});
 
 
@@ -433,7 +464,7 @@
 
 
 	// module
-	exports.push([module.id, "g.dragging rect {\n    stroke: green;\n}\n\nsvg {\n    /*border: 1px solid black;*/\n}\n\n#download {\n    position: absolute;\n    top:   40px;\n    right: 40px;\n}\n\n#right_col {\n    padding: 0px;\n    overflow: hidden\n}\n\nbody, body div.row{\n    margin:0px;\n    overflow-y: hidden;\n}\n\n#left_col {\n    padding:0px;\n}\n\n#left_col_contents{\n    overflow-y: scroll;\n}\n\n#logo img{\n     width: 100%;\n}\n\n#logo h1{\n    text-align:center;\n    font-size: 1.4rem;\n    padding-bottom: 1rem;\n    margin: 1rem 0 1rem 0;\n}\n\n.collapsible-header.lighten-2 {\n     padding-left: 5ex;\n}\n", ""]);
+	exports.push([module.id, "g.dragging rect {\n    stroke: green;\n}\n\nsvg {\n    /*border: 1px solid black;*/\n}\n\n#position {\n    position: absolute;\n    bottom:   40px;\n    right: 40px;\n}\n\n#upload {\n    position: absolute;\n    top:   40px;\n    right: 40px;\n}\n\n#download {\n    position: absolute;\n    top:   120px;\n    right: 40px;\n}\n\n#right_col {\n    padding: 0px;\n    overflow: hidden\n}\n\nbody, body div.row{\n    margin:0px;\n    overflow-y: hidden;\n}\n\n#left_col {\n    padding:0px;\n}\n\n#left_col_contents{\n    overflow-y: scroll;\n    margin-top: -15px;\n    z-index: 2;\n}\n\n#logo {\n     position: relative;\n     z-index: 1;\n     background: white;\n}\n\n#logo img{\n     width: 100%;\n}\n\n#logo h1{\n    text-align:center;\n    font-size: 1.4rem;\n    padding-bottom: 1rem;\n    margin: 1rem 0 1rem 0;\n}\n\n.collapsible-header.lighten-2 {\n     padding-left: 5ex;\n}\n", ""]);
 
 	// exports
 
@@ -750,6 +781,33 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var map = {
+		"./index.html": 7
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 6;
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "index.html";
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* FileSaver.js
 	 * A saveAs() FileSaver implementation.
 	 * 1.3.2
@@ -933,7 +991,7 @@
 
 	if (typeof module !== "undefined" && module.exports) {
 	  module.exports.saveAs = saveAs;
-	} else if (("function" !== "undefined" && __webpack_require__(7) !== null) && (__webpack_require__(8) !== null)) {
+	} else if (("function" !== "undefined" && __webpack_require__(9) !== null) && (__webpack_require__(10) !== null)) {
 	  !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
 	    return saveAs;
 	  }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -941,46 +999,19 @@
 
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports) {
 
 	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
 
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var map = {
-		"./index.html": 10
-	};
-	function webpackContext(req) {
-		return __webpack_require__(webpackContextResolve(req));
-	};
-	function webpackContextResolve(req) {
-		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
-	};
-	webpackContext.keys = function webpackContextKeys() {
-		return Object.keys(map);
-	};
-	webpackContext.resolve = webpackContextResolve;
-	module.exports = webpackContext;
-	webpackContext.id = 9;
-
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "index.html";
 
 /***/ },
 /* 11 */
