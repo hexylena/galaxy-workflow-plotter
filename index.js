@@ -81,8 +81,8 @@ var processGalaxyWorkflowToGraph = function(ga){
 
     for(var i in ga.steps){
         var step = ga.steps[i];
-        step.x = step.position.left / 5;
-        step.y = step.position.top / 5;
+        step.x = step.position.left;
+        step.y = step.position.top;
         step.focus = true;
         if(Math.random() > 0.4){
             step.focus = false;
@@ -179,7 +179,7 @@ function draw(){
         .attr('id', 'Arrow')
         .attr('style', 'overflow:visible')
         .append('path')
-        .attr('style', "fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1")
+        .attr('style', "fill-rule:evenodd;stroke-linejoin:round;fill:" + graph.config.link_stroke + ";fill-opacity:1")
         .attr('d',"M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z ")
         .attr('transform', 'scale(0.6)')
         ;
