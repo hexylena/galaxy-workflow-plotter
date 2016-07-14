@@ -155,7 +155,8 @@ $("#node_color")            .on('input', function(event){ graph.config.node_colo
 $("#node_stroke_color")     .on('input', function(event){ graph.config.node_stroke_color = event.target.value;     dirty = true; })
 $("#node_text_color")       .on('input', function(event){ graph.config.node_text_color = event.target.value;       dirty = true; })
 $("#node_border_thickness") .on('input', function(event){ graph.config.node_border_thickness = event.target.value; dirty = true; })
-$("#link_stroke")           .on('input', function(event){ graph.config.link_stroke = event.target.value;           dirty = true; /* this one updates some non-ticking params */ })
+$("#link_stroke")           .on('input', function(event){ graph.config.link_stroke = event.target.value;           dirty = true; })
+$("#link_stroke")           .on('blur',  function(event){ graph.config.link_stroke = event.target.value;           dirty = true; draw(); /* this one updates some non-ticking params */ })
 $("#link_thickness")        .on('input', function(event){ graph.config.link_thickness = event.target.value;        dirty = true; })
 $("#unfocused_opacity")     .on('input', function(event){ graph.config.unfocused_opacity = event.target.value;     dirty = true; })
 
