@@ -3,8 +3,8 @@ require("./index.js");
 require.context("./", false, /^\.\/.*\.html/);
 var fileSaver = require("./bower_components/file-saver/FileSaver.js");
 
-var Raven  = require("./bower_components/raven-js/dist/raven.js");
-Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
+//var Raven  = require("./bower_components/raven-js/dist/raven.js");
+//Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
 
 var d3 = require("./bower_components/d3/d3.js");
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
@@ -122,6 +122,16 @@ var processGalaxyWorkflowToGraph = function(ga){
     return graph;
 }
 
+
+function hexToRgb(hex) {
+    // http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb/11508164#11508164
+    var bigint = parseInt(hex.substring(1), 16);
+    var r = (bigint >> 16) & 255;
+    var g = (bigint >> 8) & 255;
+    var b = bigint & 255;
+    return [r, g, b]
+}
+
 function save(){
     if(dirty){
         console.log("Saving");
@@ -141,13 +151,13 @@ function restore(){
     dirty = false;
 }
 
-$("#node_color")            .on('input', function(event){ graph.config.node_color = event.target.value; dirty = true; })
-$("#node_stroke_color")     .on('input', function(event){ graph.config.node_stroke_color = event.target.value; dirty = true; })
-$("#node_text_color")       .on('input', function(event){ graph.config.node_text_color = event.target.value; dirty = true; })
+$("#node_color")            .on('input', function(event){ graph.config.node_color = event.target.value;            dirty = true; })
+$("#node_stroke_color")     .on('input', function(event){ graph.config.node_stroke_color = event.target.value;     dirty = true; })
+$("#node_text_color")       .on('input', function(event){ graph.config.node_text_color = event.target.value;       dirty = true; })
 $("#node_border_thickness") .on('input', function(event){ graph.config.node_border_thickness = event.target.value; dirty = true; })
-$("#link_stroke")           .on('input', function(event){ graph.config.link_stroke = event.target.value; dirty = true; })
-$("#link_thickness")        .on('input', function(event){ graph.config.link_thickness = event.target.value; dirty = true; })
-$("#unfocused_opacity")     .on('input', function(event){ graph.config.unfocused_opacity = event.target.value; dirty = true; })
+$("#link_stroke")           .on('input', function(event){ graph.config.link_stroke = event.target.value;           dirty = true; /* this one updates some non-ticking params */ })
+$("#link_thickness")        .on('input', function(event){ graph.config.link_thickness = event.target.value;        dirty = true; })
+$("#unfocused_opacity")     .on('input', function(event){ graph.config.unfocused_opacity = event.target.value;     dirty = true; })
 
 function draw(){
     $("svg").empty();
@@ -159,6 +169,52 @@ function draw(){
         .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
         .call(zoom);
 
+    var defs = d3.select('svg')
+        .append('defs');
+
+    defs.append('marker')
+        .attr('orient', 'auto')
+        .attr('refX', '0.0')
+        .attr('refY', '0.0')
+        .attr('id', 'Arrow')
+        .attr('style', 'overflow:visible')
+        .append('path')
+        .attr('style', "fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1")
+        .attr('d',"M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z ")
+        .attr('transform', 'scale(0.6)')
+        ;
+
+    var grad_dec = defs.append('linearGradient')
+        .attr('id', 'grad_dec');
+    grad_dec.append('stop')
+        .attr('style', 'stop-color:' + graph.config.link_stroke + ';stop-opacity:1')
+        .attr('offset', '0.3')
+    grad_dec.append('stop')
+        .attr('style', 'stop-color:' + graph.config.link_stroke + ';stop-opacity:' + graph.config.unfocused_opacity / 100)
+        .attr('offset', '0.5')
+
+    var grad_inc = defs.append('linearGradient')
+        .attr('id', 'grad_inc');
+    grad_inc.append('stop')
+        .attr('style', 'stop-color:' + graph.config.link_stroke + ';stop-opacity:' + graph.config.unfocused_opacity / 100)
+        .attr('offset', '0.5')
+    grad_inc.append('stop')
+        .attr('style', 'stop-color:' + graph.config.link_stroke + ';stop-opacity:1')
+        .attr('offset', '0.7')
+    //<linearGradient
+       //inkscape:collect="always"
+       //id="linearGradient4371">
+      //<stop
+         //style="stop-color:#000000;stop-opacity:1;"
+         //offset="0"
+         //id="stop4373" />
+      //<stop
+         //style="stop-color:#000000;stop-opacity:0;"
+         //offset="1"
+         //id="stop4375" />
+    //</linearGradient>
+
+
     var rect = svg.append("rect")
         .attr("width", width)
         .attr("height", height)
@@ -166,7 +222,6 @@ function draw(){
         .style("pointer-events", "all");
 
     container = svg.append("g");
-    console.log(container);
 
     var cachedData = {};
     simulation = d3.forceSimulation();
@@ -179,6 +234,7 @@ function draw(){
         .append("path")
         .attr("stroke", "black")
         .attr("fill", "none")
+        .attr("marker-start", "url(#Arrow)")
         ;
 
     var node_group = container.append("g")
@@ -254,8 +310,35 @@ function draw(){
                 data = 'M' + sx + ',' + sy + 'C' + cp1x +',' + sy + ' ' + cp2x +',' + ty + ' ' + tx +',' + ty
                 return data;
             })
-            .attr("stroke", graph.config.link_stroke)
+            //.attr("stroke", graph.config.link_stroke)
+            .attr("stroke", function(d){
+                target = positionOfNode(graph, d.target)
+                source = positionOfNode(graph, d.source)
+
+                if((cachedData[source.id]) && (cachedData[target.id])){
+                    if(cachedData[source.id].focus && cachedData[target.id].focus){
+                        return graph.config.link_stroke;
+                    } else if (cachedData[source.id].focus && !cachedData[target.id].focus){
+                        return 'url(#grad_inc)'
+                    } else if (!cachedData[source.id].focus && cachedData[target.id].focus){
+                        return 'url(#grad_dec)'
+                    } else {
+                        var rgb  = hexToRgb(graph.config.link_stroke)
+                        return 'rgba(' + rgb[0] / 255 + ','  + rgb[1] / 255 + ','  + rgb[2] / 255 + ',' + graph.config.unfocused_opacity / 100 + ')';
+                    }
+                }
+                return 'black';
+            })
             .attr("stroke-width", graph.config.link_thickness)
+            //.attr("opacity", function(d){
+                //target = positionOfNode(graph, d.target)
+                //source = positionOfNode(graph, d.source)
+
+                //if((cachedData[source.id] && cachedData[source.id].focus) && (cachedData[target.id] && cachedData[target.id].focus)){
+                    //return 1
+                //}
+                //return graph.config.unfocused_opacity / 100;
+            //})
             ;
 
         node
@@ -263,7 +346,14 @@ function draw(){
             .attr("stroke", graph.config.node_stroke_color)
             .attr("stroke-width", graph.config.node_border_thickness)
             .attr("x", function(d) { return d.x; })
-            .attr("y", function(d) { return d.y; });
+            .attr("y", function(d) { return d.y; })
+            .attr("opacity", function(d){
+                if(cachedData[d.id] && cachedData[d.id].focus){
+                    return 1
+                }
+                return graph.config.unfocused_opacity / 100;
+            })
+            ;
 
         labels
             .attr("stroke", function(d){
@@ -351,7 +441,6 @@ $("#uploaded_workflow").on('change', function(evt){
 
     reader.onloadend = function(event) {
         if (event.target.readyState == FileReader.DONE) { // DONE == 2
-            console.log(event.target.result);
             try{
                 var data = JSON.parse(event.target.result);
                 graph = null;
@@ -378,4 +467,17 @@ $("#upload").click(function(){
 
 $("#help").click(function(){
     int(); // intentional
+});
+
+$(window).on('load resize', function(){
+    height = $(window).height() - margin.top - margin.bottom
+    $("#left_col").height($(window).height() + 15);
+    $("#left_col_contents").height( $(window).height() - $("#logo").height() - 20 + 15)
+
+    d3.select("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .select("rect")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
 });
