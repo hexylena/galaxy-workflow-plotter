@@ -2,6 +2,7 @@ require("./index.css");
 require("./index.js");
 require.context("./", false, /^\.\/.*\.html/);
 var fileSaver = require("./bower_components/file-saver/FileSaver.js");
+var globalConfig = require("json!./package.json");
 
 var Raven  = require("./bower_components/raven-js/dist/raven.js");
 Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
@@ -325,7 +326,7 @@ function draw(){
                         return 'url(#grad_dec)'
                     } else {
                         var rgb  = hexToRgb(graph.config.link_stroke)
-                        return 'rgba(' + rgb[0] / 255 + ','  + rgb[1] / 255 + ','  + rgb[2] / 255 + ',' + graph.config.unfocused_opacity / 100 + ')';
+                        return 'rgba(' + rgb[0]  + ','  + rgb[1]  + ','  + rgb[2]  + ',' + graph.config.unfocused_opacity / 100 + ')';
                     }
                 }
                 return 'black';
@@ -482,3 +483,5 @@ $(window).on('load resize', function(){
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
 });
+
+$("#version").html("Version <code>" + globalConfig.version + "</code>");
