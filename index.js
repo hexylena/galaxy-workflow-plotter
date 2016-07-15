@@ -77,7 +77,7 @@ var positionOfNode = function(graph, id){
 }
 
 var processGalaxyWorkflowToGraph = function(ga){
-    graph = {
+    local_graph = {
         'meta': {
             'name': ga.name,
             'annotation': ga.annotation,
@@ -95,7 +95,7 @@ var processGalaxyWorkflowToGraph = function(ga){
         if(Math.random() > 0.4){
             step.focus = false;
         }
-        graph.nodes.push(step);
+        local_graph.nodes.push(step);
 
         for(var j in ga.steps[i].input_connections){
             if(Array.isArray(ga.steps[i].input_connections[j])){
@@ -104,7 +104,7 @@ var processGalaxyWorkflowToGraph = function(ga){
                     var target = ga.steps[i].input_connections[j][k].id;
 
                     if(target && source){
-                        graph.links.push({
+                        local_graph.links.push({
                             source: {
                                 id: source,
                                 x: step.position.left / 4,
@@ -119,7 +119,7 @@ var processGalaxyWorkflowToGraph = function(ga){
                 var target = ga.steps[i].input_connections[j].id;
 
                 if(typeof target !== 'undefined' && typeof source !== 'undefined'){
-                    graph.links.push({
+                    local_graph.links.push({
                         source: source,
                         target: target,
                     })
@@ -127,7 +127,7 @@ var processGalaxyWorkflowToGraph = function(ga){
             }
         }
     }
-    return graph;
+    return local_graph;
 }
 
 
@@ -145,6 +145,8 @@ function save(){
         console.log("Saving");
         console.log(graph.config);
         sessionStorage.setItem('graph', JSON.stringify(graph));
+        sessionStorage.setItem('origGraph', JSON.stringify(origGraph));
+        sessionStorage.setItem('history', JSON.stringify(graphHistory));
         //Materialize.toast('Saved', 1000)
         dirty = false;
     }
@@ -152,6 +154,8 @@ function save(){
 
 function restore(){
     graph = JSON.parse(sessionStorage.getItem('graph'));
+    origGraph = JSON.parse(sessionStorage.getItem('origGraph'));
+    history = JSON.parse(sessionStorage.getItem('history'));
 
     for(var idx in mapped_parameters){
         $("#" + mapped_parameters[idx]).val(graph.config[mapped_parameters[idx]])
@@ -159,6 +163,7 @@ function restore(){
     dirty = false;
 }
 
+// Colour
 $("#node_color").on('input change', function(event){
     graph.config.node_color = event.target.value;
     dirty = true;
@@ -188,8 +193,7 @@ $("#link_stroke").on('input change', function(event){
         draw();
     }
 })
-
-
+// Non-colour
 $("#node_border_thickness").on('change', function(event){
     graph.config.node_border_thickness = event.target.value;
     dirty = true;
@@ -300,6 +304,7 @@ function draw(){
             tmpnode = positionOfNode(graph, d.id)
             tmpnode.focus = cachedData[d.id].focus
             dirty = true;
+            graphHistory.push(['focus', d.id, cachedData[d.id].focus]);
             save();
         })
         ;
@@ -437,7 +442,7 @@ function zoomed(x) {
     tx = d3.event.transform;
     txf = "translate(" + tx.x + " " + tx.y + ") scale(" + tx.k + ")";
     container.attr("transform", txf);
-    //$("#position").text(parseInt(tx.x) + ", " + parseInt(tx.y));
+    graphHistory.push(["translate", txf]);
 }
 
 function dragstarted(d) {
@@ -457,6 +462,7 @@ function dragended(d) {
     d.fx = null;
     d.fy = null;
     d3.select(this).classed("dragging", false);
+    graphHistory.push(["point", d.id, d.x, d.y])
     save();
 }
 
@@ -471,6 +477,7 @@ function load(){
             }
             graph = processGalaxyWorkflowToGraph(loadedGraph);
             graph.config = default_config;
+            origGraph = JSON.parse(JSON.stringify(graph));
             save();
             draw();
         })
