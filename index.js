@@ -334,7 +334,7 @@ function draw(){
                         }
                     } else {
                         var rgb  = hexToRgb(graph.config.link_stroke)
-                        //return 'rgba(' + rgb[0]  + ','  + rgb[1]  + ','  + rgb[2]  + ',' + graph.config.unfocused_opacity / 100 + ')';
+                        return 'rgba(' + rgb[0]  + ','  + rgb[1]  + ','  + rgb[2]  + ',' + graph.config.unfocused_opacity / 100 + ')';
                     }
                 }
                 return 'black';
