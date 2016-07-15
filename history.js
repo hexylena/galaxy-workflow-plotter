@@ -88,9 +88,12 @@ module.exports = {
         return clonedOrigGraph
     },
 
-    goBack: function(graph, steps){
+    goBack: function(graph, steps, apply){
         if(steps === undefined){
             steps = 1
+        }
+        if(apply === undefined){
+            apply = false;
         }
         // Exit early if asking too much
         if(!this.canGoBack(steps)){

@@ -1,5 +1,4 @@
 require("./index.css");
-require("./index.js");
 require.context("./", false, /^\.\/.*\.html/);
 var fileSaver = require("./bower_components/file-saver/FileSaver.js");
 var globalConfig = require("json!./package.json");
@@ -8,6 +7,8 @@ var Raven  = require("./bower_components/raven-js/dist/raven.js");
 Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9', {
     release: globalConfig.version,
 }).install()
+
+var graphHistory = require("./history.js");
 
 var d3 = require("./bower_components/d3/d3.js");
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
@@ -44,9 +45,6 @@ var margin = {top: -5, right: -5, bottom: -5, left: -5},
     graph = {
         config: default_config
     },
-    graphHistory = [
-    ],
-    historyIdx = 0,
     node_color_node = $("#node_color"),
     node_stroke_color_node = $("#node_stroke_color"),
     node_text_color_node = $("#node_text_color"),
@@ -149,7 +147,7 @@ function save(){
         console.log(graph.config);
         sessionStorage.setItem('graph', JSON.stringify(graph));
         sessionStorage.setItem('origGraph', JSON.stringify(origGraph));
-        sessionStorage.setItem('history', JSON.stringify(graphHistory));
+        sessionStorage.setItem('history', JSON.stringify(graphHistory.data()));
         //Materialize.toast('Saved', 1000)
         dirty = false;
     }
@@ -162,8 +160,7 @@ function clone(obj){
 function restore(){
     graph = JSON.parse(sessionStorage.getItem('graph'));
     origGraph = JSON.parse(sessionStorage.getItem('origGraph'));
-    graphHistory = JSON.parse(sessionStorage.getItem('history'));
-    historyIdx = graphHistory.length;
+    graphHistory.restore(JSON.parse(sessionStorage.getItem('history')));
     restoreParamsFromGraph(graph);
     dirty = false;
 }
@@ -174,43 +171,33 @@ function restoreParamsFromGraph(g){
     }
 }
 
-function pushHistory(key, value){
-    if(historyIdx !== graphHistory.length){
-        // Otherwise we have gone back in history, need to slice and dice.
-        graphHistory = graphHistory.slice(0, historyIdx);
-    }
-    // If our history idx is length, then safe to push
-    graphHistory.push([key, value]);
-    historyIdx = graphHistory.length;
-}
-
 // Colour
 $("#node_color").on('input change', function(event){
     graph.config.node_color = event.target.value;
     dirty = true;
     if(event.type === "change"){
-        pushHistory([ 'graph.config.node_color', event.target.value ]);
+        graphHistory.pushHistory([ 'graph.config.node_color', event.target.value ]);
     }
 })
 $("#node_stroke_color").on('input change', function(event){
     graph.config.node_stroke_color = event.target.value;
     dirty = true;
     if(event.type === "change"){
-        pushHistory([ 'graph.config.node_stroke_color', event.target.value ]);
+        graphHistory.pushHistory([ 'graph.config.node_stroke_color', event.target.value ]);
     }
 })
 $("#node_text_color").on('input change', function(event){
     graph.config.node_text_color = event.target.value;
     dirty = true;
     if(event.type === "change"){
-        pushHistory([ 'graph.config.node_text_color', event.target.value ]);
+        graphHistory.pushHistory([ 'graph.config.node_text_color', event.target.value ]);
     }
  })
 $("#link_stroke").on('input change', function(event){
     graph.config.link_stroke = event.target.value;
     dirty = true;
     if(event.type === "change"){
-        pushHistory([ 'graph.config.link_stroke', event.target.value ]);
+        graphHistory.pushHistory([ 'graph.config.link_stroke', event.target.value ]);
         draw();
     }
 })
@@ -218,17 +205,17 @@ $("#link_stroke").on('input change', function(event){
 $("#node_border_thickness").on('change', function(event){
     graph.config.node_border_thickness = event.target.value;
     dirty = true;
-    pushHistory([ 'graph.config.node_border_thickness', event.target.value ]);
+    graphHistory.pushHistory([ 'graph.config.node_border_thickness', event.target.value ]);
  })
 $("#link_thickness").on('change', function(event){
     graph.config.link_thickness = event.target.value;
     dirty = true;
-    pushHistory([ 'graph.config.node_border_thickness', event.target.value ]);
+    graphHistory.pushHistory([ 'graph.config.node_border_thickness', event.target.value ]);
  })
 $("#unfocused_opacity").on('change', function(event){
     graph.config.unfocused_opacity = event.target.value;
     dirty = true;
-    pushHistory([ 'graph.config.node_border_thickness', event.target.value ]);
+    graphHistory.pushHistory([ 'graph.config.node_border_thickness', event.target.value ]);
  })
 
 function draw(){
@@ -328,7 +315,7 @@ function draw(){
             tmpnode = positionOfNode(graph, d.id)
             tmpnode.focus = cachedData[d.id].focus
             dirty = true;
-            pushHistory(['focus', [d.id, cachedData[d.id].focus]]);
+            graphHistory.pushHistory(['focus', [d.id, cachedData[d.id].focus]]);
             save();
         })
         ;
@@ -492,7 +479,7 @@ function dragended(d) {
     d.fx = null;
     d.fy = null;
     d3.select(this).classed("dragging", false);
-    pushHistory(["point", [d.id, d.x, d.y]])
+    graphHistory.pushHistory(["point", [d.id, d.x, d.y]])
     save();
 }
 
@@ -544,8 +531,8 @@ $("#uploaded_workflow").on('change', function(evt){
                 sessionStorage.setItem('graph', JSON.stringify(graph));
                 sessionStorage.setItem('graph', JSON.stringify(graph));
                 Materialize.toast('Saved', 1000)
-                graphHistory = []
-                historyIdx = 0;
+
+                graphHistory.reset();
                 draw();
             } catch(ex) {
                   Materialize.toast('Failed to parse JSON', 4000) // 4000 is the duration of the toast
@@ -582,46 +569,14 @@ $(window).on('load resize', function(){
 $("#version").text(globalConfig.version);
 
 
-function applyHistoryActionToGraph(g, historyAction){
-    // g assumed to be safe to mutate
-    key = historyAction[0];
-    val = historyAction[1];
-    if(key.startsWith("graph.config.")){
-        g.config[key.substring(13)] = historyAction;
-    } else if (key === "focus") {
-        g.nodes[val[0]] = val[1];
-    } else if (key === "translate") {
-        // TODO?
-    } else if (key === "point"){
-        g.nodes[val[0]].x = val[1];
-        g.nodes[val[0]].y = val[2];
-    } else {
-        console.log("Do not know how to handle " + key);
-    }
-    return g
-}
-
-function applyHistoryToGraph(g, h){
-    console.log("Rebuilding graph from history ", graphHistory.length, historyIdx);
-    clonedOrigGraph = clone(g);
-    for(var i = 0; i < h.length; i++){
-        clonedOrigGraph = applyHistoryActionToGraph(
-            clonedOrigGraph,
-            h[i][0]
-        );
-    }
-    return clonedOrigGraph
-}
-
 function KeyPress(e) {
     // http://stackoverflow.com/questions/16006583/capturing-ctrlz-key-combination-in-javascript
     var evtobj = window.event? event : e
     if (evtobj.keyCode == 90 && evtobj.ctrlKey){
         // Undo
-        if(historyIdx > 0){
-            historyIdx = historyIdx - 1;
-            tmpHist = clone(graphHistory).slice(0, historyIdx);
-            g = applyHistoryToGraph(origGraph, tmpHist)
+        if(graphHistory.canGoBack()){
+            g = graphHistory.goBack(origGraph);
+
             restoreParamsFromGraph(g);
             draw();
         } else {
