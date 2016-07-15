@@ -136,8 +136,8 @@
 
 	    for(var i in ga.steps){
 	        var step = ga.steps[i];
-	        step.x = step.position.left;
-	        step.y = step.position.top;
+	        step.x = step.position.left / 2;
+	        step.y = step.position.top / 2;
 	        step.focus = true;
 	        if(Math.random() > 0.4){
 	            step.focus = false;
@@ -388,7 +388,7 @@
 	                        }
 	                    } else {
 	                        var rgb  = hexToRgb(graph.config.link_stroke)
-	                        //return 'rgba(' + rgb[0]  + ','  + rgb[1]  + ','  + rgb[2]  + ',' + graph.config.unfocused_opacity / 100 + ')';
+	                        return 'rgba(' + rgb[0]  + ','  + rgb[1]  + ','  + rgb[2]  + ',' + graph.config.unfocused_opacity / 100 + ')';
 	                    }
 	                }
 	                return 'black';
@@ -1141,7 +1141,7 @@
 
 	module.exports = {
 		"name": "galaxy-workflow-plotter",
-		"version": "0.7.0",
+		"version": "0.7.3",
 		"description": "Plot Galaxy Workflows",
 		"main": "index.js",
 		"devDependencies": {
