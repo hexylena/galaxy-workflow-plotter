@@ -321,12 +321,20 @@ function draw(){
                     if(cachedData[source.id].focus && cachedData[target.id].focus){
                         return graph.config.link_stroke;
                     } else if (cachedData[source.id].focus && !cachedData[target.id].focus){
-                        return 'url(#grad_inc)'
+                        if(cachedData[source.id].x < cachedData[target.id].x + cachedData[target.id].width + 15){
+                            return 'url(#grad_dec)'
+                        } else {
+                            return 'url(#grad_inc)'
+                        }
                     } else if (!cachedData[source.id].focus && cachedData[target.id].focus){
-                        return 'url(#grad_dec)'
+                        if(cachedData[source.id].x < cachedData[target.id].x + cachedData[target.id].width + 15){
+                            return 'url(#grad_inc)'
+                        } else {
+                            return 'url(#grad_dec)'
+                        }
                     } else {
                         var rgb  = hexToRgb(graph.config.link_stroke)
-                        return 'rgba(' + rgb[0]  + ','  + rgb[1]  + ','  + rgb[2]  + ',' + graph.config.unfocused_opacity / 100 + ')';
+                        //return 'rgba(' + rgb[0]  + ','  + rgb[1]  + ','  + rgb[2]  + ',' + graph.config.unfocused_opacity / 100 + ')';
                     }
                 }
                 return 'black';
@@ -362,6 +370,8 @@ function draw(){
                 cachedData[d.id] = {
                     width: this.getComputedTextLength() + 2 * graph.config.node_padding,
                     focus: (cachedData[d.id]) ? cachedData[d.id].focus : d.focus,
+                    x: d.x,
+                    //y: d.y,
                 }
                 d3.select(this.parentNode.children[0]).attr('width', cachedData[d.id].width);
             })
