@@ -82,8 +82,8 @@ var processGalaxyWorkflowToGraph = function(ga){
 
     for(var i in ga.steps){
         var step = ga.steps[i];
-        step.x = step.position.left;
-        step.y = step.position.top;
+        step.x = step.position.left / 2;
+        step.y = step.position.top / 2;
         step.focus = true;
         if(Math.random() > 0.4){
             step.focus = false;
