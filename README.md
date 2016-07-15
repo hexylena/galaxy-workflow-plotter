@@ -26,6 +26,8 @@ tool, users are more focused on data flow.
 - [ ] Differentially coloured groups?
 - [ ] text wrapping
 - [ ] `Your feature here (no, seriously, please file a bug report, I don't know what to do with this now that I've built it.)`
+- [ ] updating layout of graph
+- [ ] undo/redo
 - [ ] ...
 - [ ] profit?
 
