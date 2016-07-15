@@ -37,9 +37,14 @@ var margin = {top: -5, right: -5, bottom: -5, left: -5},
         node_width: 80,
         node_padding: 5,
     },
+    origGraph = {
+        config: default_config
+    },
     graph = {
         config: default_config
     },
+    graphHistory = [
+    ],
     node_color_node = $("#node_color"),
     node_stroke_color_node = $("#node_stroke_color"),
     node_text_color_node = $("#node_text_color"),
@@ -154,14 +159,52 @@ function restore(){
     dirty = false;
 }
 
-$("#node_color")            .on('input', function(event){ graph.config.node_color = event.target.value;            dirty = true; })
-$("#node_stroke_color")     .on('input', function(event){ graph.config.node_stroke_color = event.target.value;     dirty = true; })
-$("#node_text_color")       .on('input', function(event){ graph.config.node_text_color = event.target.value;       dirty = true; })
-$("#node_border_thickness") .on('input', function(event){ graph.config.node_border_thickness = event.target.value; dirty = true; })
-$("#link_stroke")           .on('input', function(event){ graph.config.link_stroke = event.target.value;           dirty = true; })
-$("#link_stroke")           .on('blur',  function(event){ graph.config.link_stroke = event.target.value;           dirty = true; draw(); /* this one updates some non-ticking params */ })
-$("#link_thickness")        .on('input', function(event){ graph.config.link_thickness = event.target.value;        dirty = true; })
-$("#unfocused_opacity")     .on('input', function(event){ graph.config.unfocused_opacity = event.target.value;     dirty = true; })
+$("#node_color").on('input change', function(event){
+    graph.config.node_color = event.target.value;
+    dirty = true;
+    if(event.type === "change"){
+        graphHistory.push([ 'graph.config.node_color', event.target.value ]);
+    }
+})
+$("#node_stroke_color").on('input change', function(event){
+    graph.config.node_stroke_color = event.target.value;
+    dirty = true;
+    if(event.type === "change"){
+        graphHistory.push([ 'graph.config.node_stroke_color', event.target.value ]);
+    }
+})
+$("#node_text_color").on('input change', function(event){
+    graph.config.node_text_color = event.target.value;
+    dirty = true;
+    if(event.type === "change"){
+        graphHistory.push([ 'graph.config.node_text_color', event.target.value ]);
+    }
+ })
+$("#link_stroke").on('input change', function(event){
+    graph.config.link_stroke = event.target.value;
+    dirty = true;
+    if(event.type === "change"){
+        graphHistory.push([ 'graph.config.link_stroke', event.target.value ]);
+        draw();
+    }
+})
+
+
+$("#node_border_thickness").on('change', function(event){
+    graph.config.node_border_thickness = event.target.value;
+    dirty = true;
+    graphHistory.push([ 'graph.config.node_border_thickness', event.target.value ]);
+ })
+$("#link_thickness").on('change', function(event){
+    graph.config.link_thickness = event.target.value;
+    dirty = true;
+    graphHistory.push([ 'graph.config.node_border_thickness', event.target.value ]);
+ })
+$("#unfocused_opacity").on('change', function(event){
+    graph.config.unfocused_opacity = event.target.value;
+    dirty = true;
+    graphHistory.push([ 'graph.config.node_border_thickness', event.target.value ]);
+ })
 
 function draw(){
     $("svg").empty();
