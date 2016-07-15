@@ -59,7 +59,9 @@
 	var globalConfig = __webpack_require__(11);
 
 	var Raven  = __webpack_require__(12);
-	Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
+	Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9', {
+	    release: globalConfig.version,
+	}).install()
 
 	var d3 = __webpack_require__(13);
 	var margin = {top: -5, right: -5, bottom: -5, left: -5},
@@ -342,7 +344,7 @@
 	                    tx = 0;
 	                }
 	                ty = target.y + graph.config.node_height / 2;
-	                if(!source.x){
+	                if(source && !source.x){
 	                    sx = 0;
 	                }else{
 	                    sx = source.x;
@@ -1141,7 +1143,7 @@
 
 	module.exports = {
 		"name": "galaxy-workflow-plotter",
-		"version": "0.7.3",
+		"version": "0.8.0",
 		"description": "Plot Galaxy Workflows",
 		"main": "index.js",
 		"devDependencies": {
