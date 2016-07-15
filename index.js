@@ -288,7 +288,7 @@ function draw(){
                     tx = 0;
                 }
                 ty = target.y + graph.config.node_height / 2;
-                if(!source.x){
+                if(source && !source.x){
                     sx = 0;
                 }else{
                     sx = source.x;
