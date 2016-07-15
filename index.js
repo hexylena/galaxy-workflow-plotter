@@ -5,7 +5,9 @@ var fileSaver = require("./bower_components/file-saver/FileSaver.js");
 var globalConfig = require("json!./package.json");
 
 var Raven  = require("./bower_components/raven-js/dist/raven.js");
-Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9').install()
+Raven.config('https://c1404b96be204c03be5725b9194d2de8@biobio-monitor.tamu.edu/9', {
+    release: globalConfig.version,
+}).install()
 
 var d3 = require("./bower_components/d3/d3.js");
 var margin = {top: -5, right: -5, bottom: -5, left: -5},
