@@ -21,7 +21,7 @@ tool, users are more focused on data flow.
 - [x] Sentry Logging
 - [x] Window Resizing
 - [x] Colours and plot customizatino
-- [ ] More link customizations? Variable sized links?
+- [x] More link customizations? Variable sized links?
 - [ ] Drawing boxes/groups under important groups of tools?
 - [ ] Differentially coloured groups?
 - [ ] text wrapping
